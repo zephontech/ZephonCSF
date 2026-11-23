@@ -1,0 +1,9 @@
+target/
+/elylibs/
+
+# Local credential stores, including the demo sample
+*.cs
+*.p12
+*.pfx
+*.jks
+*.keystore

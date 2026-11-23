@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.5</version>
+        <relativePath/>
+    </parent>
+    <groupId>tech.zephon.csf</groupId>
+    <artifactId>elytron-test-app</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+    <name>ElyTronTestApp</name>
+
+    <properties>
+        <java.version>17</java.version>
+        <elytron-library.version>1.2.0-SNAPSHOT</elytron-library.version>
+        <elytron-core.scope>compile</elytron-core.scope>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>tech.zephon.csf</groupId>
+            <artifactId>elytron-core-all</artifactId>
+            <version>${elytron-library.version}</version>
+            <scope>${elytron-core.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>tech.zephon.csf</groupId>
+            <artifactId>elytron-spring-boot</artifactId>
+            <version>${elytron-library.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>elytron-test-app</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>tomcat-shared-elytron</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <elytron-core.scope>provided</elytron-core.scope>
+                <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+            </properties>
+            <build>
+                <directory>${project.basedir}/target/tomcat-shared</directory>
+            </build>
+        </profile>
+    </profiles>
+</project>

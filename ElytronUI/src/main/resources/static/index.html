@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Zephon Credential Manager</title>
+    <link rel="stylesheet" href="store.css">
+    <script src="store.js" defer></script>
+</head>
+<body>
+<header class="masthead">
+    
+</header>
+<main class="frame">
+    <section class="heading" aria-labelledby="page-title">
+        <div>
+            <h1 id="page-title">Zephon Credential Manager</h1>
+            <p>Open, edit, and save an Elytron PKCS#12 credential store.</p>
+        </div>
+    </section>
+    <p id="status" role="status" aria-live="polite" class="status"></p>
+
+    <section id="start" class="start-grid" aria-label="Choose a keystore">
+        <div class="panel start-card">
+            <h2>Open a keystore</h2>
+            <p>Choose an existing file and enter its unlock password.</p>
+            <button class="primary" id="open-store" disabled>Open file</button>
+        </div>
+        <div class="panel start-card">
+            <h2>Create a keystore</h2>
+            <p>Choose a filename and password for a new keystore.</p>
+            <button class="secondary" id="new-store" disabled>Create keystore</button>
+        </div>
+    </section>
+
+    <div id="workspace" hidden>
+        <section class="panel file-bar" aria-label="Open keystore">
+            <div class="file-name">
+                <h2 id="filename"></h2>
+                <p id="file-status"></p>
+            </div>
+            <div class="file-actions">
+                <button type="button" class="secondary" id="back-home">Back to home</button>
+                <button class="primary" id="save-store">Save keystore</button>
+            </div>
+        </section>
+        <section class="panel" aria-labelledby="entries-title">
+            <div class="panel-header">
+                <h2 id="entries-title">Password entries <span class="count" id="count">0</span></h2>
+                <div class="table-controls">
+                    <label class="search"><span class="sr-only">Search aliases</span>
+                        <input type="search" id="filter" placeholder="Search aliases" autocomplete="off">
+                    </label>
+                    <button class="secondary" id="add">New credential</button>
+                </div>
+            </div>
+            <table id="entry-table" hidden>
+                <thead><tr><th scope="col">Alias</th><th scope="col">Actions</th></tr></thead>
+                <tbody id="entries"></tbody>
+            </table>
+            <div class="empty" id="empty">No password entries yet.</div>
+        </section>
+    </div>
+</main>
+<dialog id="file-dialog" aria-labelledby="file-dialog-title">
+    <form id="file-form" autocomplete="off" enctype="multipart/form-data">
+        <h2 id="file-dialog-title"></h2>
+        <label id="upload-field">Keystore file
+            <input type="file" name="file" id="upload">
+        </label>
+        <label id="filename-field">Filename
+            <input name="filename" maxlength="120" id="new-filename" spellcheck="false">
+        </label>
+        <label>Keystore password
+            <input type="password" name="password" id="store-password" maxlength="256" required autocomplete="off">
+        </label>
+        <label id="confirm-password-field">Confirm keystore password
+            <input type="password" id="confirm-password" maxlength="256" autocomplete="off">
+        </label>
+        <p class="error" id="file-error" role="alert" hidden></p>
+        <div class="dialog-actions">
+            <button type="button" class="quiet" id="file-cancel">Cancel</button>
+            <button type="submit" class="primary" id="file-submit"></button>
+        </div>
+    </form>
+</dialog>
+<dialog id="dialog" aria-labelledby="dialog-title">
+    <form id="entry-form" autocomplete="off">
+        <h2 id="dialog-title"></h2>
+        <p id="dialog-detail"></p>
+        <label id="alias-field">Alias
+            <input name="alias" id="alias" maxlength="64" pattern="[A-Za-z0-9][A-Za-z0-9._\-]{0,63}"
+                   placeholder="oim-rest-password" spellcheck="false" autocomplete="off">
+        </label>
+        <label id="value-field">Credential value
+            <input type="password" name="value" id="value" maxlength="4096" autocomplete="new-password">
+        </label>
+        <pre id="revealed" hidden aria-label="Revealed credential value"></pre>
+        <p class="error" id="error" role="alert" hidden></p>
+        <div class="dialog-actions">
+            <button type="button" class="quiet" id="close">Cancel</button>
+            <button type="submit" class="primary" id="confirm">Save</button>
+        </div>
+    </form>
+</dialog>
+</body>
+</html>
