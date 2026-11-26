@@ -83,4 +83,6 @@ Set `elytron.store.property-prefix=app` to publish each alias as an individual p
 
 Set at least one of `elytron.store.credentials-property` or `elytron.store.property-prefix`. Startup fails if neither is configured, because the adapter requires an explicit choice for exposing the store entries.
 
+These options are independent: an application can use only the map option or only the prefix option. Configure both only when the application uses both representations. For example, ElyTronTestApp requires both because its `AppCredentials` binding and page use the map, while its startup check and page also read the individual prefixed properties. An app using only the map can omit `elytron.store.property-prefix`; an app using only individual properties can omit `elytron.store.credentials-property`.
+
 The integration is disabled by default. Plain Java consumers can use `ElytronCredentialReader` directly from the shaded core.
