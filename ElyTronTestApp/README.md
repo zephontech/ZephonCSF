@@ -17,7 +17,7 @@ java -jar target/elytron-test-app.war
 
 The sample store overrides the dummy `app.userid` and `app.password` defaults in `application.properties` for the running app. The file stays as written. The demo verifies the effective properties against the store and prints the property names and values.
 
-Open http://127.0.0.1:8081/ to see the live credentials page. Each request reopens the keystore, so refresh the page after editing the file to see the current entries. The included `sample.cs` contains the `userid` and `password` aliases with dummy values for local testing. The sample unlock password is public. Use dummy credentials with this demo because it prints the loaded values.
+Open http://127.0.0.1:8081/ to see the credentials page. It shows current keystore values, individual Spring properties under the configured prefix, and the `app.credentials` map bound at startup. Each request reopens the keystore, so refresh after editing the file to see current store entries; the two Spring views remain the startup snapshot. The included `sample.cs` contains the `userid` and `password` aliases with dummy values for local testing. The sample unlock password is public. Use dummy credentials with this demo because it prints the loaded values.
 
 Set `ELYTRON_STORE_PATH` to use a different store. By default, `sample.cs` is resolved relative to the process working directory. Different stores can have different aliases and counts. Startup fails if the store cannot be opened.
 

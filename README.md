@@ -111,7 +111,7 @@ Other Spring Boot apps can use either bulk setting independently. Reserve the ma
 
 ## How the live page reads changes
 
-The startup properties are a snapshot taken when Spring starts. The demo's `GET /` controller opens a new read-only reader on each request, loads the current aliases and values, and renders them in a table. Select **Reload from keystore** to see changes on disk. An empty store shows an empty state. An unreadable store returns HTTP 503. [Credentials controller](ElyTronTestApp/src/main/java/tech/zephon/csf/demo/CredentialsController.java)
+The startup properties are a snapshot taken when Spring starts. The demo's `GET /` controller opens a new read-only reader on each request and shows three views: current keystore values, effective individual properties under `elytron.store.property-prefix`, and the `app.credentials` map bound at startup. Select **Reload from keystore** to see current store values; the prefix and map sections show the startup values. An empty store shows an empty state. An unreadable store returns HTTP 503. [Credentials controller](ElyTronTestApp/src/main/java/tech/zephon/csf/demo/CredentialsController.java)
 
 To try both paths side by side:
 

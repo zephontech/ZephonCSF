@@ -20,9 +20,11 @@ import org.wildfly.security.credential.store.CredentialStoreException;
 @Controller
 final class CredentialsController {
     private final Environment environment;
+    private final ElyTronTestApp.AppCredentials credentials;
 
-    CredentialsController(Environment environment) {
+    CredentialsController(Environment environment, ElyTronTestApp.AppCredentials credentials) {
         this.environment = environment;
+        this.credentials = credentials;
     }
 
     @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
@@ -33,7 +35,8 @@ final class CredentialsController {
             var reader = ElytronCredentialReader.open(storePath, unlock);
             Map<String, char[]> passwords = reader.readPasswords();
             try {
-                return page(HttpStatus.OK, renderCredentials(passwords));
+                String prefix = environment.getRequiredProperty("elytron.store.property-prefix");
+                return page(HttpStatus.OK, renderCredentials(passwords, prefix, credentials.credentials()));
             } finally {
                 passwords.values().forEach(password -> Arrays.fill(password, '\0'));
             }
@@ -44,19 +47,36 @@ final class CredentialsController {
         }
     }
 
-    private static String renderCredentials(Map<String, char[]> passwords) {
-        if (passwords.isEmpty()) {
-            return "<p>The keystore contains no password entries.</p>";
-        }
+    private String renderCredentials(Map<String, char[]> passwords, String prefix,
+            Map<String, String> mappedCredentials) {
+        var content = new StringBuilder();
+        content.append("<h2>Current keystore values</h2>")
+                .append(renderTable("Alias", "Value", passwords));
 
-        var table = new StringBuilder("""
-                <table>
-                    <thead><tr><th scope="col">Alias</th><th scope="col">Value</th></tr></thead>
-                    <tbody>
-                """);
-        new TreeMap<>(passwords).forEach((alias, password) -> table
-                .append("<tr><th scope=\"row\">").append(escape(alias))
-                .append("</th><td><code>").append(escape(new String(password)))
+        var prefixedProperties = new TreeMap<String, String>();
+        passwords.keySet().forEach(alias -> {
+            String property = prefix + "." + alias;
+            prefixedProperties.put(property, environment.getProperty(property, "<not set>"));
+        });
+        content.append("<h2>Spring properties from prefix: ").append(escape(prefix)).append("</h2>")
+                .append(renderTable("Property", "Value", prefixedProperties));
+
+        content.append("<h2>Spring credentials map (app.credentials)</h2>")
+                .append(renderTable("Alias", "Value", mappedCredentials));
+        return content.toString();
+    }
+
+    private static String renderTable(String keyHeading, String valueHeading, Map<String, ?> values) {
+        if (values.isEmpty()) {
+            return "<p>No password entries.</p>";
+        }
+        var table = new StringBuilder("<table><thead><tr><th scope=\"col\">")
+                .append(escape(keyHeading)).append("</th><th scope=\"col\">")
+                .append(escape(valueHeading)).append("</th></tr></thead><tbody>");
+        new TreeMap<>(values).forEach((key, value) -> table
+                .append("<tr><th scope=\"row\">").append(escape(key))
+                .append("</th><td><code>").append(escape(value instanceof char[] chars
+                        ? new String(chars) : String.valueOf(value)))
                 .append("</code></td></tr>\n"));
         return table.append("</tbody></table>").toString();
     }
