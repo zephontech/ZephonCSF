@@ -75,6 +75,8 @@ elytron.store.unlock-password=${ELYTRON_STORE_PASSWORD}
 
 The library reads the `userid` and `password` aliases into `app.userid` and `app.password` before configuration binding. The store values take precedence for those properties. Set `ELYTRON_STORE_PASSWORD` in the application's environment before starting it.
 
+For an external Tomcat deployment, you can pass `elytron.store.path` and `elytron.store.unlock-password` as JVM system properties at startup (for example, with `CATALINA_OPTS`). In that case, omit those two settings from the WAR's `application.properties`; Spring reads the startup values as application properties. Keep `elytron.store.enabled=true` in the application configuration. The path and unlock password must still be available when the app starts.
+
 To use different aliases or write to different application properties, set `elytron.store.userid-alias`, `elytron.store.password-alias`, `elytron.store.userid-property`, and `elytron.store.password-property` as needed. For example, the destination properties can be `spring.datasource.username` and `spring.datasource.password`.
 
 For a dynamic set of aliases, add `elytron.store.credentials-property=app.credentials`. In this mode the library publishes one map containing all clear-password entries. Bind it with `@ConfigurationProperties("app")` and a `Map<String, String> credentials` member. Reserve the configured property for this map.

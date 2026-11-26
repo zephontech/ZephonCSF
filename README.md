@@ -70,6 +70,8 @@ ElyTronTestApp needs an absolute path to the credential-store file and its unloc
 
 For Windows testing, pass the demo settings as JVM `-D` options through `CATALINA_OPTS`. This example uses the repository's sample store and public unlock password. Run it in the same PowerShell session as the copy commands.
 
+When Tomcat supplies `elytron.store.path` and `elytron.store.unlock-password` at startup, the application does not need duplicate values for those two properties in its `application.properties`. They must still be present in Tomcat's runtime environment. The app also uses them to reopen the store for each live-page request.
+
 ```powershell
 $env:CATALINA_OPTS += ' -Delytron.store.path=E:\ZephonCSF\ElyTronTestApp\sample.cs -Delytron.store.unlock-password=sample-store-password'
 & "$env:CATALINA_BASE\bin\startup.bat"
