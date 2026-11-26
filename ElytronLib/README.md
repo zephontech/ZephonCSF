@@ -77,12 +77,10 @@ The library reads the `userid` and `password` aliases into `app.userid` and `app
 
 For an external Tomcat deployment, you can pass `elytron.store.path` and `elytron.store.unlock-password` as JVM system properties at startup (for example, with `CATALINA_OPTS`). In that case, omit those two settings from the WAR's `application.properties`; Spring reads the startup values as application properties. Keep `elytron.store.enabled=true` in the application configuration. The path and unlock password must still be available when the app starts.
 
-To use different aliases or write to different application properties, set `elytron.store.userid-alias`, `elytron.store.password-alias`, `elytron.store.userid-property`, and `elytron.store.password-property` as needed. For example, the destination properties can be `spring.datasource.username` and `spring.datasource.password`.
-
 For a dynamic set of aliases, add `elytron.store.credentials-property=app.credentials`. In this mode the library publishes one map containing all clear-password entries. Bind it with `@ConfigurationProperties("app")` and a `Map<String, String> credentials` member. Reserve the configured property for this map.
 
 Set `elytron.store.property-prefix=app` to publish each alias as an individual property. For example, the `userid` alias supplies `app.userid` and overrides any existing value at startup. You can use this setting with the credentials map. Keep the map property and its nested names reserved for that map.
 
-When both bulk settings are omitted, the library uses the two-property configuration above.
+Set at least one of `elytron.store.credentials-property` or `elytron.store.property-prefix`. Startup fails if neither is configured, because the adapter requires an explicit choice for exposing the store entries.
 
 The integration is disabled by default. Plain Java consumers can use `ElytronCredentialReader` directly from the shaded core.

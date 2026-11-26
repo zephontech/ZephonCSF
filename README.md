@@ -107,7 +107,7 @@ elytron.store.property-prefix=app
 2. After Spring loads its configuration files and before it binds application properties, the post-processor opens the store and reads the password entries. It adds the resulting property source at the front of the Spring environment, giving the store values precedence over file defaults and command-line values for the properties it supplies. [Post-processor](ElytronSpringBoot/src/main/java/tech/zephon/csf/spring/ElytronEnvironmentPostProcessor.java)
 3. With both bulk settings enabled, Spring gets a map at `app.credentials` and an individual property for each alias. For example, `userid` becomes the map key `userid` and the property `app.userid`. The sample binds the map into `AppCredentials` and checks that the individual property values match. [Demo application](ElyTronTestApp/src/main/java/tech/zephon/csf/demo/ElyTronTestApp.java)
 
-Other Spring Boot apps can use either bulk setting independently. Reserve the map's property name and its nested names for the map when combining modes. If both bulk settings are omitted, ElytronLib maps two aliases to two properties. The defaults map `userid` and `password` to `app.userid` and `app.password`. Customize them with the four alias and destination settings. [Spring Boot settings](ElytronLib/README.md#load-spring-boot-properties-at-startup)
+Other Spring Boot apps can use either bulk setting independently. Reserve the map's property name and its nested names for the map when combining modes. At least one bulk setting is required; startup fails if both are omitted. [Spring Boot settings](ElytronLib/README.md#load-spring-boot-properties-at-startup)
 
 ## How the live page reads changes
 

@@ -49,7 +49,8 @@ public final class ElytronEnvironmentPostProcessor implements EnvironmentPostPro
         String credentialsProperty = environment.getProperty("elytron.store.credentials-property");
         String propertyPrefix = environment.getProperty("elytron.store.property-prefix");
         if (credentialsProperty == null && propertyPrefix == null) {
-            return readMappedProperties(environment, reader);
+            throw new IllegalStateException("Set at least one of elytron.store.credentials-property or "
+                    + "elytron.store.property-prefix to choose how Elytron credentials are exposed.");
         }
 
         Map<String, String> credentials = readCredentials(reader);
@@ -72,16 +73,6 @@ public final class ElytronEnvironmentPostProcessor implements EnvironmentPostPro
         return properties;
     }
 
-    private static Map<String, Object> readMappedProperties(ConfigurableEnvironment environment,
-            ElytronCredentialReader reader) throws CredentialStoreException {
-        String useridAlias = environment.getProperty("elytron.store.userid-alias", "userid");
-        String passwordAlias = environment.getProperty("elytron.store.password-alias", "password");
-        String useridProperty = environment.getProperty("elytron.store.userid-property", "app.userid");
-        String passwordProperty = environment.getProperty("elytron.store.password-property", "app.password");
-        return Map.of(useridProperty, readValue(reader, useridAlias),
-                passwordProperty, readValue(reader, passwordAlias));
-    }
-
     private static Map<String, String> readCredentials(ElytronCredentialReader reader)
             throws CredentialStoreException {
         Map<String, char[]> passwords = reader.readPasswords();
@@ -94,13 +85,4 @@ public final class ElytronEnvironmentPostProcessor implements EnvironmentPostPro
         }
     }
 
-    private static String readValue(ElytronCredentialReader reader, String alias) throws CredentialStoreException {
-        char[] value = reader.readPassword(alias)
-                .orElseThrow(() -> new IllegalStateException("Missing Elytron password entry for alias: " + alias));
-        try {
-            return new String(value);
-        } finally {
-            Arrays.fill(value, '\0');
-        }
-    }
 }
